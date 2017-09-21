@@ -11,13 +11,17 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:sendToTerminal.run"
+        "onCommand:sendToTerminal.run",
+        "onCommand:sendToTerminal.runLastCommand"
     ],
     "main": "./extension",
     "contributes": {
         "commands": [{
             "command": "sendToTerminal.run",
             "title": "Send to Terminal - Run"
+        }, {
+            "command": "sendToTerminal.runLastCommand",
+            "title": "Send to Terminal - Run Last Command"
         }],
         "configuration": {
             "title": "Send to Terminal Configuration",

@@ -3,6 +3,8 @@ var path = require('path')
 var ncp = require('copy-paste')
 var EOL = require('os').EOL
 
+var lastCommand = null
+
 function activate(context) {
   var config = vscode.workspace.getConfiguration('sendToTerminal')
 
@@ -12,6 +14,15 @@ function activate(context) {
       return
     }
     runCommand(editor, config)
+  })
+  context.subscriptions.push(disposable)
+
+  var disposable = vscode.commands.registerCommand('sendToTerminal.runLastCommand', function () {
+    var editor = vscode.window.activeTextEditor
+    if (!editor) {
+      return
+    }
+    runLastCommand(editor)
   })
   context.subscriptions.push(disposable)
 }
@@ -83,8 +94,27 @@ function runCommand(editor, config) {
   var _command = buildCommand(command, editor)
 
   command = clearBeforeRun(config) ? ` clear; ${_command}` : ` ${_command}`
+  lastCommand = command
   ncp.paste((err, clipboard) => {
     ncp.copy(command + EOL, () => {
+      vscode.commands.executeCommand('workbench.action.terminal.focus').then(() => {
+        vscode.commands.executeCommand('workbench.action.terminal.paste').then(() => {
+          vscode.window.showTextDocument(document, column)
+          ncp.copy(clipboard)
+        })
+      })
+    })
+  })
+}
+
+function runLastCommand(editor) {
+  if (lastCommand == null) {
+    return
+  }
+  var column = editor.viewColumn
+  var document = editor.document
+  ncp.paste((err, clipboard) => {
+    ncp.copy(lastCommand + EOL, () => {
       vscode.commands.executeCommand('workbench.action.terminal.focus').then(() => {
         vscode.commands.executeCommand('workbench.action.terminal.paste').then(() => {
           vscode.window.showTextDocument(document, column)
