@@ -26,7 +26,12 @@ function buildCommand(command, editor) {
   var extName = path.extname(document.fileName)
   var root = vscode.workspace.rootPath
   var relativeFile = "." + document.fileName.replace(root, "")
+  var position = editor.selection.active
+  var line = position.line + 1
+  var column = position.character + 1
 
+  cmdStr = cmdStr.replace(/\${line}/g, line)
+  cmdStr = cmdStr.replace(/\${column}/g, column)
   cmdStr = cmdStr.replace(/\${relativeFile}/g, relativeFile)
   cmdStr = cmdStr.replace(/\${file}/g, `${document.fileName}`)
   cmdStr = cmdStr.replace(/\${workspaceRoot}/g, `${vscode.workspace.rootPath}`)
