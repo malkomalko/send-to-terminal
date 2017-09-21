@@ -1,4 +1,5 @@
 var vscode = require('vscode')
+var path = require('path')
 var ncp = require('copy-paste')
 var EOL = require('os').EOL
 
@@ -19,8 +20,28 @@ exports.activate = activate
 function deactivate() {}
 exports.deactivate = deactivate
 
-function buildCommand(command) {
-  return command.cmd
+function buildCommand(command, editor) {
+  var document = editor.document
+  var cmdStr = command.cmd
+  var extName = path.extname(document.fileName)
+  var root = vscode.workspace.rootPath
+  var relativeFile = "." + document.fileName.replace(root, "")
+
+  cmdStr = cmdStr.replace(/\${relativeFile}/g, relativeFile)
+  cmdStr = cmdStr.replace(/\${file}/g, `${document.fileName}`)
+  cmdStr = cmdStr.replace(/\${workspaceRoot}/g, `${vscode.workspace.rootPath}`)
+  cmdStr = cmdStr.replace(/\${fileBasename}/g, `${path.basename(document.fileName)}`)
+  cmdStr = cmdStr.replace(/\${fileDirname}/g, `${path.dirname(document.fileName)}`)
+  cmdStr = cmdStr.replace(/\${fileExtname}/g, `${extName}`)
+  cmdStr = cmdStr.replace(/\${fileBasenameNoExt}/g, `${path.basename(document.fileName, extName)}`)
+  cmdStr = cmdStr.replace(/\${cwd}/g, `${process.cwd()}`)
+
+  // replace environment variables ${env.Name}
+  cmdStr = cmdStr.replace(/\${env\.([^}]+)}/g, (sub, envName) => {
+    return process.env[envName]
+  })
+
+  return cmdStr
 }
 
 function clearBeforeRun(config) {
@@ -54,14 +75,14 @@ function runCommand(editor, config) {
     return
   }
 
-  var _command = buildCommand(command)
+  var _command = buildCommand(command, editor)
 
   command = clearBeforeRun(config) ? ` clear; ${_command}` : ` ${_command}`
   ncp.paste((err, clipboard) => {
     ncp.copy(command + EOL, () => {
       vscode.commands.executeCommand('workbench.action.terminal.focus').then(() => {
         vscode.commands.executeCommand('workbench.action.terminal.paste').then(() => {
-          vscode.window.showTextDocument(editor.document, column)
+          vscode.window.showTextDocument(document, column)
           ncp.copy(clipboard)
         })
       })
