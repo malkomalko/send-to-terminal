@@ -26,6 +26,24 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Clear terminal before run?"
+                },
+                "sendToTerminal.commands": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "match": {
+                                "type": "string",
+                                "description": "Regex for matching files to run commands on.",
+                                "default": ".*"
+                            },
+                            "cmd": {
+                                "type": "string",
+                                "description": "Command to execute on save.",
+                                "default": "echo ${file}"
+                            }
+                        }
+                    }
                 }
             }
         }
