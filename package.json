@@ -11,13 +11,13 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sendToTerminal"
+        "onCommand:sendToTerminal.run"
     ],
     "main": "./extension",
     "contributes": {
         "commands": [{
-            "command": "extension.sendToTerminal",
-            "title": "Send to Terminal"
+            "command": "sendToTerminal.run",
+            "title": "Send to Terminal - Run"
         }]
     },
     "scripts": {
