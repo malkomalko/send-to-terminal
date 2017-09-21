@@ -15,12 +15,20 @@
     ],
     "main": "./extension",
     "contributes": {
-        "commands": [
-            {
-                "command": "sendToTerminal.run",
-                "title": "Send to Terminal - Run"
+        "commands": [{
+            "command": "sendToTerminal.run",
+            "title": "Send to Terminal - Run"
+        }],
+        "configuration": {
+            "title": "Send to Terminal Configuration",
+            "properties": {
+                "sendToTerminal.clearBeforeRun": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Clear terminal before run?"
+                }
             }
-        ]
+        }
     },
     "scripts": {
         "postinstall": "node ./node_modules/vscode/bin/install",
