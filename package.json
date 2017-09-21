@@ -12,7 +12,8 @@
     ],
     "activationEvents": [
         "onCommand:sendToTerminal.run",
-        "onCommand:sendToTerminal.runLastCommand"
+        "onCommand:sendToTerminal.runFocus",
+        "onCommand:sendToTerminal.runLast"
     ],
     "main": "./extension",
     "contributes": {
@@ -20,8 +21,11 @@
             "command": "sendToTerminal.run",
             "title": "Send to Terminal - Run"
         }, {
-            "command": "sendToTerminal.runLastCommand",
-            "title": "Send to Terminal - Run Last Command"
+            "command": "sendToTerminal.runFocus",
+            "title": "Send to Terminal - Run Focus"
+        }, {
+            "command": "sendToTerminal.runLast",
+            "title": "Send to Terminal - Run Last"
         }],
         "configuration": {
             "title": "Send to Terminal Configuration",
@@ -32,6 +36,24 @@
                     "description": "Clear terminal before run?"
                 },
                 "sendToTerminal.commands": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "match": {
+                                "type": "string",
+                                "description": "Regex for matching files to run commands on.",
+                                "default": ".*"
+                            },
+                            "cmd": {
+                                "type": "string",
+                                "description": "Command to execute on save.",
+                                "default": "echo ${file}"
+                            }
+                        }
+                    }
+                },
+                "sendToTerminal.focusCommands": {
                     "type": "array",
                     "items": {
                         "type": "object",

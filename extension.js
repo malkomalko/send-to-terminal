@@ -13,11 +13,20 @@ function activate(context) {
     if (!editor) {
       return
     }
-    runCommand(editor, config)
+    runCommand(commands, editor, config)
   })
   context.subscriptions.push(disposable)
 
-  var disposable = vscode.commands.registerCommand('sendToTerminal.runLastCommand', function () {
+  var disposable = vscode.commands.registerCommand('sendToTerminal.runFocus', function () {
+    var editor = vscode.window.activeTextEditor
+    if (!editor) {
+      return
+    }
+    runCommand(focusCommands, editor, config)
+  })
+  context.subscriptions.push(disposable)
+
+  var disposable = vscode.commands.registerCommand('sendToTerminal.runLast', function () {
     var editor = vscode.window.activeTextEditor
     if (!editor) {
       return
@@ -68,12 +77,16 @@ function commands(config) {
   return config.get('commands') || []
 }
 
+function focusCommands(config) {
+  return config.get('focusCommands') || []
+}
+
 function matchPattern(pattern, fileName) {
   return pattern && pattern.length > 0 && new RegExp(pattern).test(fileName)
 }
 
-function runCommand(editor, config) {
-  var _commands = commands(config)
+function runCommand(fn, editor, config) {
+  var _commands = fn(config)
   if (_commands.length === 0) {
     return
   }
