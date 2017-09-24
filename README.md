@@ -1,65 +1,61 @@
 # send-to-terminal README
 
-This is the README for your extension "send-to-terminal". After writing up a brief description, we recommend including the following sections.
+send-to-terminal allows you to run custom commands to the active Terminal that match specific patterns that you define.  Out of the box there is no default configuration, so you will have to set this up yourself.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+The first thing you'll want to do is set a few configuration options in your User Settings.  Setting it up for rspec looks like this:
 
-For example if there is an image subfolder under your extension project workspace:
+```
+    "sendToTerminal.commands": [{
+        "match": "_spec\\.rb$",
+        "cmd": "./bin/rspec ${relativeFile}"
+    }, {
+        "match": ".*",
+        "cmd": "echo 'Please add an entry to \"sendToTerminal.commands\" for \"${fileExtname}\"'"
+    }],
+    "sendToTerminal.focusCommands": [{
+        "match": "_spec\\.rb$",
+        "cmd": "./bin/rspec ${relativeFile}:${line}"
+    }],
+```
 
-\!\[feature X\]\(images/feature-x.png\)
+You'll notice that we're using tokens like ${relativeFile}.  Here's a full list of all the tokens:
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+* ${column}
+* ${cwd}
+* ${env.Name} // replace environment variables
+* ${file}
+* ${fileBasename}
+* ${fileBasenameNoExt}
+* ${fileDirname}
+* ${fileExtname}
+* ${line}
+* ${relativeFile}
+* ${workspaceRoot}
 
-## Requirements
+## Commands
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+* `sendToTerminal.run` (Send to Terminal - Run): Run the current file if it can find a matching pattern in `sendToTerminal.commands`.
+* `sendToTerminal.runFocus` (Send to Terminal - Run Focus): Optionally run a focused version (think test) if it can find a matching pattern in `sendToTerminal.focusCommands`.
+* `sendToTerminal.runLast` (Send to Terminal - Run Last): Run the last command.  This is useful if you are in another file and you want to run the last test.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+* `sendToTerminal.clearBeforeRun` (default `false`): Set to `true` if you would like to clear the terminal before every run.
+* `sendToTerminal.commands`: Array of focus commands used with `sendToTerminal.run`.
+* `sendToTerminal.focusCommands`: Array of focus commands used with `sendToTerminal.runFocus`.
 
-For example:
+## Requirements
 
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+N/A
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+N/A
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.0.1
 
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on OSX or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on OSX or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (OSX) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Initial release
