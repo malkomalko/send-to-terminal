@@ -4,6 +4,7 @@
     "description": "Send commands to terminal based on file patterns",
     "version": "0.0.1",
     "publisher": "malkomalko",
+    "repository": "malkomalko/send-to-terminal",
     "engines": {
         "vscode": "^1.16.0"
     },
